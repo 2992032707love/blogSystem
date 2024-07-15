@@ -33,8 +33,8 @@
 
 1. Clone the repository:
     ```bash
-    git clone https://github.com/your-repo/springboot-blog.git
-    cd springboot-blog
+    git clone https://github.com/2992032707love/blogSystem.git
+    cd blogSystem
     ```
 
 2.  使用您的Mysql数据库更新`application.yml` 文件.
@@ -42,7 +42,7 @@
 3. Build and run the application:
     ```bash
     mvn clean package
-    java -jar target/springboot-blog.jar
+    java -jar target/blogSystem-1.0-SNAPSHOT-spring-boot.jar
     ```
 
 ### Docker 部署
