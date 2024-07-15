@@ -1,0 +1,20 @@
+server:
+  port: 9401
+spring:
+  application:
+    name: blog-system-service
+  datasource:
+    type: com.alibaba.druid.pool.DruidDataSource
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://192.168.0.108:3306/blogDB?characterEncoding=utf-8&useSSL=false&serverTimezone=GMT%2B8&rewriteBatchedStatements=true&allowPublicKeyRetrieval=true
+    username: mydocker
+    password: root
+
+mybatis-plus:
+  type-aliases-package: com.rts.entity
+
+logging:
+  level:
+    root: info
+    com:
+      rts: info

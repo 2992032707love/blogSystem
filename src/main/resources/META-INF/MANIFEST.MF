@@ -1,0 +1,30 @@
+Manifest-Version: 1.0
+Main-Class: com.rts.App9401
+Class-Path: mybatis-plus-3.5.6.jar micrometer-commons-1.12.0.jar mybatis
+ -plus-extension-3.5.6.jar tomcat-embed-core-10.1.16.jar log4j-api-2.21.
+ 1.jar mybatis-plus-spring-boot3-starter-3.5.6.jar jackson-datatype-jsr3
+ 10-2.15.3.jar slf4j-api-2.0.9.jar mysql-connector-java-8.0.18.jar mybat
+ is-plus-spring-boot-autoconfigure-3.5.6.jar log4j-to-slf4j-2.21.1.jar s
+ pring-boot-starter-tomcat-3.2.0.jar spring-webmvc-6.1.1.jar jakarta.ann
+ otation-api-2.1.1.jar jackson-module-parameter-names-2.15.3.jar jul-to-
+ slf4j-2.0.9.jar spring-boot-actuator-autoconfigure-3.2.0.jar mybatis-pl
+ us-core-3.5.6.jar spring-boot-starter-3.2.0.jar logback-core-1.4.11.jar
+  micrometer-core-1.12.0.jar jsqlparser-4.9.jar hutool-all-5.8.22.jar mi
+ crometer-jakarta9-1.12.0.jar spring-jdbc-6.1.1.jar annotations-13.0.jar
+  HdrHistogram-2.1.12.jar spring-aop-6.1.1.jar spring-boot-starter-actua
+ tor-3.2.0.jar mybatis-plus-generator-3.5.6.jar mybatis-plus-annotation-
+ 3.5.6.jar freemarker-2.3.32.jar logback-classic-1.4.11.jar jackson-data
+ bind-2.15.3.jar jjwt-0.9.1.jar spring-expression-6.1.1.jar spring-boot-
+ starter-json-3.2.0.jar spring-jcl-6.1.1.jar spring-boot-starter-aop-3.2
+ .0.jar tomcat-embed-websocket-10.1.16.jar spring-boot-3.2.0.jar aspectj
+ weaver-1.9.20.1.jar spring-boot-starter-web-3.2.0.jar jackson-annotatio
+ ns-2.15.3.jar jackson-core-2.15.3.jar spring-tx-6.1.1.jar protobuf-java
+ -3.6.1.jar tomcat-embed-el-10.1.16.jar druid-spring-boot-starter-1.1.20
+ .jar spring-beans-6.1.1.jar spring-core-6.1.1.jar mybatis-3.5.16.jar sp
+ ring-web-6.1.1.jar micrometer-observation-1.12.0.jar jackson-datatype-j
+ dk8-2.15.3.jar spring-boot-starter-logging-3.2.0.jar java-jwt-3.18.2.ja
+ r LatencyUtils-2.0.3.jar mybatis-spring-3.0.3.jar spring-context-6.1.1.
+ jar druid-1.1.20.jar snakeyaml-2.2.jar jbcrypt-0.4.jar spring-boot-star
+ ter-jdbc-3.2.0.jar spring-boot-autoconfigure-3.2.0.jar HikariCP-5.0.1.j
+ ar spring-boot-actuator-3.2.0.jar
+
