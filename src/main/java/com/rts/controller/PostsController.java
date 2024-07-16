@@ -2,6 +2,7 @@ package com.rts.controller;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.rts.common.ResultJson;
+import com.rts.config.JWTProperties;
 import com.rts.entity.Posts;
 import com.rts.service.PostsService;
 import com.rts.util.JwtUtil;
@@ -9,9 +10,6 @@ import jakarta.annotation.Resource;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
-import java.util.concurrent.TimeUnit;
 
 /**
  * <p>
@@ -28,35 +26,47 @@ public class PostsController {
     @Resource
     private PostsService postService;
 
-    @PostMapping
-    public ResultJson<String> createPost(HttpServletRequest request, @RequestHeader("token") String token, @RequestBody Posts posts) {
-//        String username = JwtUtil.getUsernameFromToken(token);
-        String username1 =(String) request.getAttribute("username");
+    private static final String TOKEN_NAME ="token";
 
-        return ResultJson.success(postService.createPost(username1, posts) ? "新建文章成功！" : "新建文章失败！");
+    @Resource
+    private JwtUtil jwtUtil;
+
+    @Resource
+    private JWTProperties jwtProperties;
+
+
+
+    @PostMapping
+    public ResultJson<String> createPost(HttpServletRequest request, @RequestHeader(TOKEN_NAME) String token, @RequestBody Posts posts) {
+        String username = null;
+//        username = JwtUtil.getUsernameFromToken(token);
+        username =(String) request.getAttribute(jwtProperties.getClaimKey());
+
+        return ResultJson.success(postService.createPost(username, posts) ? "新建文章成功！" : "新建文章失败！");
     }
 
     @GetMapping
-    public ResultJson<IPage<Posts>> getPosts(@RequestParam Integer uid, @RequestParam(required = false) Integer pageNo, @RequestParam(required = false) Integer pageSize) {
-        return ResultJson.success(postService.getPosts(uid,pageNo,pageSize));
+    public ResultJson<IPage<Posts>> getPosts(@RequestParam("uid") Integer uid, @RequestParam(value = "pageNo",required = false) Integer pageNo, @RequestParam(value = "pageSize",required = false) Integer pageSize) {
+
+        return ResultJson.success(postService.getPostsByUser(uid,pageNo,pageSize));
     }
 
     @GetMapping("/{id}")
     public ResultJson<Posts> getPost(@PathVariable("id") Integer id) {
-        return ResultJson.success(postService.getPost(id));
+        return ResultJson.success(postService.getPostById(id));
     }
 
     @PutMapping("/{id}")
-    public ResultJson<String> updatePost(@RequestHeader("token") String token, @PathVariable("id") Integer id, @RequestBody Posts posts) {
-        String username = JwtUtil.getUsernameFromToken(token);
-        return ResultJson.success(postService.updatePost(username, id, posts) ? "修改成功！" : "修改失败，请一会儿再试！");
+    public ResultJson<String> updatePost(@RequestHeader(TOKEN_NAME) String token, @PathVariable("id") Integer id, @RequestBody Posts posts) {
+        String username = jwtUtil.getUsernameFromToken(token);
+        return ResultJson.success(postService.updatePostById(username, id, posts) ? "修改成功！" : "修改失败，请一会儿再试！");
     }
 
     @DeleteMapping("/{id}")
-    public ResultJson<String> deletePost(@RequestHeader("token") String token, @PathVariable("id") Integer id) {
-        String username = JwtUtil.getUsernameFromToken(token);
+    public ResultJson<String> deletePost(@RequestHeader(TOKEN_NAME) String token, @PathVariable("id") Integer id) {
+        String username = jwtUtil.getUsernameFromToken(token);
 
-        return ResultJson.success(postService.deletePost(username, id) ? "删除成功！" : "删除失败，请一会儿再试！");
+        return ResultJson.success(postService.deletePostById(username, id) ? "删除成功！" : "删除失败，请一会儿再试！");
     }
 
 }

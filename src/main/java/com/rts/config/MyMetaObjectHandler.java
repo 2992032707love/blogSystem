@@ -15,17 +15,21 @@ import java.time.LocalDateTime;
 @Component
 public class MyMetaObjectHandler implements MetaObjectHandler {
 
+    private static final String CREATED = "created";
+
+    private static final String LAST_MODIFIED = "lastModified";
+
     @Override
     public void insertFill(MetaObject metaObject) {
         log.info("开始插入填充...");
-        this.strictInsertFill(metaObject, "created", LocalDateTime.class, LocalDateTime.now());
-        this.strictInsertFill(metaObject, "lastModified", LocalDateTime.class, LocalDateTime.now());
+        this.strictInsertFill(metaObject, CREATED, LocalDateTime.class, LocalDateTime.now());
+        this.strictInsertFill(metaObject, LAST_MODIFIED, LocalDateTime.class, LocalDateTime.now());
         log.info("结束插入填充...");
     }
 
     @Override
     public void updateFill(MetaObject metaObject) {
         log.info("开始更新填充...");
-        this.strictUpdateFill(metaObject, "lastModified", LocalDateTime.class, LocalDateTime.now());
+        this.strictUpdateFill(metaObject, LAST_MODIFIED, LocalDateTime.class, LocalDateTime.now());
     }
 }

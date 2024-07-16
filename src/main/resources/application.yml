@@ -8,13 +8,23 @@ spring:
     driver-class-name: com.mysql.cj.jdbc.Driver
     url: jdbc:mysql://192.168.0.108:3306/blogDB?characterEncoding=utf-8&useSSL=false&serverTimezone=GMT%2B8&rewriteBatchedStatements=true&allowPublicKeyRetrieval=true
     username: mydocker
+#    url: jdbc:mysql://127.0.0.1:3306/blogDB?characterEncoding=utf-8&useSSL=false&serverTimezone=GMT%2B8&rewriteBatchedStatements=true&allowPublicKeyRetrieval=true
+#    username: root
     password: root
+  jwt:
+    secret-key: rentingsheng
+    expirationTime: 86400000
+    update-threshold: 28800000
+    claimKey: username
 
 mybatis-plus:
   type-aliases-package: com.rts.entity
+
+token:
+  name: token
 
 logging:
   level:
     root: info
     com:
-      rts: info
+      rts: debug

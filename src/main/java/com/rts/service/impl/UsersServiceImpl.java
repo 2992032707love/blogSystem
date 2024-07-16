@@ -11,9 +11,6 @@ import com.rts.util.PasswordUtil;
 import jakarta.annotation.Resource;
 import org.springframework.stereotype.Service;
 
-import java.util.HashMap;
-import java.util.Map;
-
 /**
  * <p>
  * 用户表 服务实现类
@@ -25,18 +22,25 @@ import java.util.Map;
 @Service
 public class UsersServiceImpl extends ServiceImpl<UsersMapper, Users> implements UsersService {
 
+    private static final String USERS_TABLE_FIELD_USERNAME = "username";
+
+    private static final String USERS_TABLE_FIELD_EMAIL = "email";
+
     @Resource
     private UsersMapper usersMapper;
 
+    @Resource
+    private JwtUtil jwtUtil;
+
     @Override
-    public Boolean register(Users user) {
+    public Boolean registerUser(Users user) {
         Users users = null;
         QueryWrapper<Users> wrapper = new QueryWrapper<>();
-        wrapper.eq("username", user.getUsername());
+        wrapper.eq(USERS_TABLE_FIELD_USERNAME, user.getUsername());
         users = this.getOne(wrapper);
         if (users == null) {
             QueryWrapper<Users> wrapperTwo = new QueryWrapper<>();
-            wrapperTwo.eq("email",user.getEmail());
+            wrapperTwo.eq(USERS_TABLE_FIELD_EMAIL,user.getEmail());
             users = this.getOne(wrapperTwo);
             if (users == null) {
                 user.setPassword(PasswordUtil.encrypt(user.getPassword()));
@@ -50,20 +54,18 @@ public class UsersServiceImpl extends ServiceImpl<UsersMapper, Users> implements
     }
 
     @Override
-    public Map<String, Object> login(String username, String password) {
-        Users user = usersMapper.selectOne(new QueryWrapper<Users>().eq("username", username));
+    public String loginUser(String username, String password) {
+        Users user = usersMapper.selectOne(new QueryWrapper<Users>().eq(USERS_TABLE_FIELD_USERNAME, username));
         if (user == null && !PasswordUtil.verify(password, user.getPassword())) {
             throw new MyException("用户名或密码错误");
         }
-        String token = JwtUtil.generateToken(user.getUsername());
-        Map<String, Object> response = new HashMap<>();
-        response.put("token", token);
-        return response;
+        String token = jwtUtil.generateToken(user.getUsername());
+        return token;
     }
 
     @Override
-    public Users getCurrentUser(String username) {
+    public Users getCurrentAuthenticatedUser(String username) {
 //        String username = JwtUtil.getUsernameFromToken(token);
-        return usersMapper.selectOne(new QueryWrapper<Users>().eq("username", username));
+        return usersMapper.selectOne(new QueryWrapper<Users>().eq(USERS_TABLE_FIELD_USERNAME, username));
     }
 }

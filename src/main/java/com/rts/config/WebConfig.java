@@ -1,5 +1,6 @@
 package com.rts.config;
 
+import com.rts.constants.PathConstants;
 import com.rts.interceptor.AuthInterceptor;
 import jakarta.annotation.Resource;
 import org.springframework.context.annotation.Configuration;
@@ -18,8 +19,8 @@ public class WebConfig implements WebMvcConfigurer {
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(authInterceptor)
-                .addPathPatterns("/api/**")
-                .excludePathPatterns("/api/auth/register","/api/auth/login");
+                .addPathPatterns(PathConstants.INTERCEPTOR_PATH)
+                .excludePathPatterns(PathConstants.AUTH_REGISTER,PathConstants.AUTH_LOGIN);
     }
 
 

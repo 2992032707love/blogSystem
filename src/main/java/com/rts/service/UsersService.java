@@ -14,9 +14,26 @@ import java.util.Map;
  * @since 2024-07-15 17:13:36
  */
 public interface UsersService extends IService<Users> {
+    /**
+     * 用户注册
+     * @param user
+     * @return
+     */
+    Boolean registerUser(Users user);
 
-    Boolean register(Users user);
-    Map<String, Object> login(String username, String password);
-    Users getCurrentUser(String username);
+    /**
+     * 用户登录
+     * @param username
+     * @param password
+     * @return
+     */
+    String loginUser(String username, String password);
+
+    /**
+     * 获取当前用户信息（需要认证）
+     * @param username
+     * @return
+     */
+    Users getCurrentAuthenticatedUser(String username);
 
 }

@@ -11,9 +11,9 @@ import com.rts.mapper.UsersMapper;
 import com.rts.service.PostsService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import jakarta.annotation.Resource;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
 
 
 /**
@@ -25,7 +25,14 @@ import java.util.List;
  * @since 2024-07-15 17:17:26
  */
 @Service
+@Slf4j
 public class PostsServiceImpl extends ServiceImpl<PostsMapper, Posts> implements PostsService {
+
+    private static final String USERS_TABLE_FIELD_USERNAME = "username";
+
+    private static final String POSTS_TABLE_FIELD_USER_ID = "user_id";
+
+    private static final String POSTS_TABLEFIELD_CREATED = "created";
     @Resource
     private PostsMapper postsMapper;
 
@@ -34,7 +41,7 @@ public class PostsServiceImpl extends ServiceImpl<PostsMapper, Posts> implements
 
     @Override
     public Boolean createPost(String username, Posts post) {
-        Users users = usersMapper.selectOne(new QueryWrapper<Users>().eq("username", username));
+        Users users = usersMapper.selectOne(new QueryWrapper<Users>().eq(USERS_TABLE_FIELD_USERNAME, username));
         if (users != null) {
             post.setUserId(users.getUserId());
 
@@ -45,10 +52,10 @@ public class PostsServiceImpl extends ServiceImpl<PostsMapper, Posts> implements
     }
 
     @Override
-    public IPage<Posts> getPosts(Integer uid, Integer pageNo, Integer pageSize) {
+    public IPage<Posts> getPostsByUser(Integer uid, Integer pageNo, Integer pageSize) {
         QueryWrapper<Posts> queryWrapper = new QueryWrapper<>();
-        queryWrapper.orderByAsc("created");
-        queryWrapper.eq("user_id", uid);
+        queryWrapper.orderByAsc(POSTS_TABLEFIELD_CREATED);
+        queryWrapper.eq(POSTS_TABLE_FIELD_USER_ID, uid);
         if (pageNo != null && pageSize != null) {
             return this.page(new Page<>(pageNo,pageSize),queryWrapper);
         } else {
@@ -57,12 +64,12 @@ public class PostsServiceImpl extends ServiceImpl<PostsMapper, Posts> implements
     }
 
     @Override
-    public Posts getPost(Integer id) {
+    public Posts getPostById(Integer id) {
         return postsMapper.selectById(id);
     }
 
     @Override
-    public Boolean updatePost(String username, Integer id, Posts posts) {
+    public Boolean updatePostById(String username, Integer id, Posts posts) {
         Posts existingPost = postsMapper.selectById(id);
         if (existingPost != null && existingPost.getUserId().equals(getUserIdByUsername(username))) {
             posts.setPostId(id);
@@ -75,7 +82,7 @@ public class PostsServiceImpl extends ServiceImpl<PostsMapper, Posts> implements
     }
 
     @Override
-    public Boolean deletePost(String username, Integer id) {
+    public Boolean deletePostById(String username, Integer id) {
         Posts post = postsMapper.selectById(id);
         if (post != null && post.getUserId().equals(getUserIdByUsername(username))) {
             return this.removeById(id);
@@ -85,7 +92,7 @@ public class PostsServiceImpl extends ServiceImpl<PostsMapper, Posts> implements
     }
 
     private Integer getUserIdByUsername(String username) {
-        Users user = usersMapper.selectOne(new QueryWrapper<Users>().eq("username", username));
+        Users user = usersMapper.selectOne(new QueryWrapper<Users>().eq(USERS_TABLE_FIELD_USERNAME, username));
         return user != null ? user.getUserId() : null;
     }
 }

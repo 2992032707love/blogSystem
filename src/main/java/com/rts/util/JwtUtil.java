@@ -3,6 +3,11 @@ package com.rts.util;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.interfaces.DecodedJWT;
+import com.rts.config.JWTProperties;
+import jakarta.annotation.Resource;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.util.Date;
 
@@ -10,22 +15,28 @@ import java.util.Date;
  * @Author: RTS
  * @CreateDateTime: 2024/7/15 17:35
  **/
+@Service
+@Slf4j
 public class JwtUtil {
-    private static final String SECRET_KEY = "rentingsheng";
-    private static final long EXPIRATION_TIME = 86400000; // 1 day
-    private static final long UPDATE_THRESHOLD = EXPIRATION_TIME / 3; // 过期时间的三分之一
+
+    @Resource
+    private JWTProperties jwtProperties;
+
+//    private static final String SECRET_KEY = "rentingsheng";
+//    private static final long EXPIRATION_TIME = 86400000; // 1 day
+//    private static final long UPDATE_THRESHOLD = EXPIRATION_TIME / 3; // 过期时间的三分之一
 
     /**
      * 生成token
      * @param username
      * @return
      */
-    public static String generateToken(String username) {
+    public String generateToken(String username) {
         return JWT.create()
-                .withClaim("username",username)
-                .withExpiresAt(new Date(System.currentTimeMillis() + EXPIRATION_TIME))
+                .withClaim(jwtProperties.getClaimKey(),username)
+                .withExpiresAt(new Date(System.currentTimeMillis() + jwtProperties.getExpirationTime()))
                 .withIssuedAt(new Date(System.currentTimeMillis()))
-                .sign(Algorithm.HMAC256(SECRET_KEY));
+                .sign(Algorithm.HMAC256(jwtProperties.getSecretKey()));
     }
 
     /**
@@ -33,14 +44,15 @@ public class JwtUtil {
      * @param token
      * @return
      */
-    public static String getUsernameFromToken(String token) {
+    public String getUsernameFromToken(String token) {
 
-        DecodedJWT verify = JWT.require(Algorithm.HMAC256(SECRET_KEY)).build().verify(token);
-        String username = verify.getClaim("username").asString();
+        DecodedJWT verify = JWT.require(Algorithm.HMAC256(jwtProperties.getSecretKey())).build().verify(token);
+        String username = verify.getClaim(jwtProperties.getClaimKey()).asString();
         Date expiresAt = verify.getExpiresAt();
         Date issuedAt = verify.getIssuedAt();
-        System.out.println("issuedAt:当前时间" + issuedAt);
-        System.out.println( "expiresAt:过期时间   "+ expiresAt);
+        log.info("issuedAt:发布时间:  " + issuedAt.getTime());
+        log.info("当前时间:" + new Date(System.currentTimeMillis()).getTime());
+        log.info("expiresAt:过期时间:   "+ expiresAt.getTime());
         return username;
 
     }
@@ -50,17 +62,19 @@ public class JwtUtil {
      * @param token
      * @return
      */
-    public static String updateToken(String token) {
-        DecodedJWT verify = JWT.require(Algorithm.HMAC256(SECRET_KEY)).build().verify(token);
+    public String updateToken(String token) {
+        DecodedJWT verify = JWT.require(Algorithm.HMAC256(jwtProperties.getSecretKey())).build().verify(token);
         Date expiresAt = verify.getExpiresAt();
         long remainingTime = expiresAt.getTime() - System.currentTimeMillis();
-        if (remainingTime < UPDATE_THRESHOLD) {
-            String username = verify.getClaim("username").asString();
+//        log.info("jwt的更新阈值: " + jwtProperties.getUpdateThreshold());
+//        log.info("JWT的剩余有效时间: " + remainingTime);
+        if (remainingTime < jwtProperties.getUpdateThreshold()) {
+            String username = verify.getClaim(jwtProperties.getClaimKey()).asString();
             return JWT.create()
-                    .withClaim("username", username)
-                    .withExpiresAt(new Date(System.currentTimeMillis() + EXPIRATION_TIME))
+                    .withClaim(jwtProperties.getClaimKey(), username)
+                    .withExpiresAt(new Date(System.currentTimeMillis() + jwtProperties.getExpirationTime()))
                     .withIssuedAt(new Date(System.currentTimeMillis()))
-                    .sign(Algorithm.HMAC256(SECRET_KEY));
+                    .sign(Algorithm.HMAC256(jwtProperties.getSecretKey()));
         } else {
             return token;
         }
@@ -73,7 +87,7 @@ public class JwtUtil {
      * 验证token
      * @param token
      */
-    public static void verify(String token){
-        JWT.require(Algorithm.HMAC256(SECRET_KEY)).build().verify(token);
+    public void verify(String token){
+        JWT.require(Algorithm.HMAC256(jwtProperties.getSecretKey())).build().verify(token);
     }
 }
